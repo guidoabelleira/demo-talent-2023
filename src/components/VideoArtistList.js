@@ -1,71 +1,32 @@
-import { View, Text, StyleSheet, StatusBar } from 'react-native'
+import { View, Text, StyleSheet, StatusBar, Button, Pressable } from 'react-native'
 import React, { useRef, useEffect, useState } from 'react'
 import { Video, ResizeMode } from 'expo-av';
-import { Ionicons, Entypo, FontAwesome5, Octicons } from '@expo/vector-icons';
+import { Ionicons, Entypo, FontAwesome5, MaterialIcons, EvilIcons, Octicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 
+import { PanGestureHandler } from 'react-native-gesture-handler';
+import Animated, { useAnimatedGestureHandler } from 'react-native-reanimated';
+
 import {WINDOW_HEIGHT, WINDOW_WIDTH} from '../utils/utils';
 import IconButton from './IconButton';
 import { Image } from 'react-native';
+import ModalShare from './ModalShare';
 
-
-export default function VideoItem({data, isActive, currentIndex, onButtonPressCancel}) {
+const VideoArtistList = ({data, isActive, currentIndex, onButtonPressCancel}) => {
     const videoRef = useRef(null);
     const navigation = useNavigation();
+    const [isOpenShareModal, setIsOpenShareModal] = useState(false)
     const [status, setStatus] = useState({});
     const [isMuted, setIsMuted] = useState(false);
     const toggleMute = () => {
         setIsMuted((prevMuted) => !prevMuted);
     };
 
-    const handlePressAcept = async () => {
-        let reformData = [
-            {
-                idArtista: data.idArtista,
-                name: data.name,
-                location: data.location,
-                age: data.age,
-                phone: data.phone,
-                email: data.email,
-                image: data.image,
-                views: {
-                    instagram: data.views.instagram,
-                    tiktok: data.views.tiktok,
-                    youtube: data.views.youtube,
-                    spotify: data.views.spotify
-                },
-                mediaLinks: [
-                    data.mediaLinks[1]
-                ],
-            },
-            {
-                idArtista: data.idArtista,
-                name: data.name,
-                location: data.location,
-                age: data.age,
-                phone: data.phone,
-                email: data.email,
-                image: data.image,
-                views: {
-                    instagram: data.instagram,
-                    tiktok: data.tiktok,
-                    youtube: data.youtube,
-                    spotify: data.spotify
-                },
-                mediaLinks: [
-                    data.mediaLinks[0]
-                ],
-            }
-        ]
+    const onPressContact = async () => {
         await videoRef.current.pauseAsync()
-        navigation.replace('Artista', reformData);
-    };
-
-    const handlePressCancel = () => {
-        const nextIndex = currentIndex + 1;
-        onButtonPressCancel(nextIndex);
+        navigation.replace('Profile', data);
     };
 
     const onPressMenu = async () => {
@@ -86,10 +47,10 @@ export default function VideoItem({data, isActive, currentIndex, onButtonPressCa
     }, [isActive]);
 
     const bottomTabHeight = useBottomTabBarHeight();
-
-    return (
+  return (
+    <>
         <View style={[styles.container, {height: WINDOW_HEIGHT - bottomTabHeight }]}>
-            <StatusBar barStyle={'light-content'}/>
+            <StatusBar barStyle={'light-content'} />
             <TouchableOpacity style={styles.videoContainer} onPress={toggleMute} activeOpacity={0.7}>
             <Video 
                 ref={videoRef}
@@ -102,26 +63,25 @@ export default function VideoItem({data, isActive, currentIndex, onButtonPressCa
                 onPlaybackStatusUpdate={status => setStatus(() => status)}
                 isMuted={isMuted}
                 shouldPlay={false}
-                shouldCorrectPitch={false}
             />
             </TouchableOpacity>
             <View style={styles.bottomSection}>
-                <View style={styles.bottomTopSection}>
-                    <IconButton 
-                        onPress={handlePressCancel}
-                        icon={<Image source={require('../utils/X.png')} />}
-                    />
-                    <IconButton 
-                        onPress={handlePressAcept}
-                        icon={<Image source={require('../utils/pngwing.png')} />}
-                    />
-                </View>
                 <View style={styles.bottomBottomSection}>
-                    <Text style={styles.name}>{data.name}</Text>
+                    <View style={styles.containerName}>
+                        <Text style={styles.name}>{data.name}</Text>
+                        <MaterialIcons name="favorite" size={28} color="red" />
+                    </View>
                     <Text style={styles.location}>{data.location}</Text>
                     <Text style={styles.age}>{data.age}</Text>
                 </View>
-                
+                <View style={styles.bottomTopSection}>
+                    <TouchableOpacity style={styles.buttonContact} onPress={() => onPressContact()}>
+                        <Text style={styles.buttonContactText}>Contactar</Text>
+                    </TouchableOpacity >
+                    <TouchableOpacity onPress={() => setIsOpenShareModal(true)}>
+                        <MaterialCommunityIcons name="share" size={36} color="#FFFFFF" />
+                    </TouchableOpacity>
+                </View>
             </View>
             <View style={styles.verticalBar}>
                 <View style={styles.verticalBarItem}>
@@ -150,7 +110,7 @@ export default function VideoItem({data, isActive, currentIndex, onButtonPressCa
                     </View>
                     <View style={styles.topBarItem}> 
                         <Octicons name="dot-fill" size={24} color="#F6F8B5" />
-                        <Text style={styles.topBarItemText}>Home</Text>
+                        <Text style={styles.topBarItemText}>New artist</Text>
                         <Octicons name="dot-fill" size={24} color="#F6F8B5" />
                     </View>
                     <View style={styles.topBarItemRounded}> 
@@ -160,8 +120,12 @@ export default function VideoItem({data, isActive, currentIndex, onButtonPressCa
                     </View>
                 </View>
             </View>
+           
         </View>
-    )
+        <ModalShare isOpen={isOpenShareModal} onClose={() => setIsOpenShareModal(false)}/>
+        </>
+
+  )
 }
 
 const styles = StyleSheet.create({
@@ -180,27 +144,43 @@ const styles = StyleSheet.create({
     bottomSection: {
         position: "absolute",
         bottom: 0,
-        flexDirection: "column",
+        flexDirection: "row",
         width: "100%",
-        height: 110,
+        height: 75,
         paddingHorizontal: 12,
-        paddingBottom: 16
+        paddingTop: 4,
+        paddingBottom: 12,
+        backgroundColor: 'rgba(0, 0, 0, 0.1)',
+        borderRadius: 8,
     },
     bottomBottomSection: {
-        flex: 2,
-        flexDirection: "row",
-        alignItems: "baseline",
+        flex: 4,
+        flexDirection: "column",
+        alignItems: "baseline"
     },
     bottomTopSection: {
         flex: 4,
         flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "flex-start",
-        paddingHorizontal: 48,
-        marginBottom: 8
+        justifyContent: "space-around",
+        alignItems: "center"
     },
+    buttonContact: {
+        borderRadius: 10,
+        borderWidth: 2,
+        padding: 8,
+        borderColor: "#89B7FC",
+        marginRight: 4
+    },
+    buttonContactText: {
+        fontSize: 16,
+        fontWeight: "bold",
+        color: "#89B7FC"
+    },
+    containerName: {
+        flexDirection: "row"
+    },  
     name: {
-        fontSize: 18,
+        fontSize: 22,
         color: "white",
         fontWeight: "bold",
         marginRight: 10
@@ -214,26 +194,6 @@ const styles = StyleSheet.create({
     age: {
         fontSize: 12,
         color: "white",
-    },
-    verticalBar: {
-        position: "absolute",
-        left: 12,
-        top: 150
-    },
-    verticalBarItem: {
-        marginBottom: 24,
-        alignItems: "center",
-        borderRadius: 50,
-        width: 59,
-        height: 60,
-        borderWidth: 1,
-        borderColor: "#FADE4F",
-        padding: 8
-    },
-    verticalBarText: {
-        color: "white",
-        marginTop: 1,
-        fontSize: 10
     },
     topBar: {
         position: "absolute",
@@ -263,4 +223,26 @@ const styles = StyleSheet.create({
         paddingHorizontal: 12,
         fontSize: 20
     },
+    verticalBar: {
+        position: "absolute",
+        left: 12,
+        top: 150
+    },
+    verticalBarItem: {
+        marginBottom: 24,
+        alignItems: "center",
+        borderRadius: 50,
+        width: 59,
+        height: 60,
+        borderWidth: 1,
+        borderColor: "#FADE4F",
+        padding: 8
+    },
+    verticalBarText: {
+        color: "white",
+        marginTop: 1,
+        fontSize: 10
+    }
 })
+
+export default VideoArtistList

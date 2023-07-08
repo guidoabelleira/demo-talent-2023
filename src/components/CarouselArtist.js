@@ -1,14 +1,14 @@
 import { FlatList, StyleSheet, View, PanResponder } from 'react-native'
 import React, { useState, useRef } from 'react'
-import VideoItem from './VideoItem'
+import VideoArtistList from './VideoArtistList'
 
 import dataArtistasProvider from '../utils/dataArtistas'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
 
 import {WINDOW_HEIGHT} from '../utils/utils';
-import { VirtualizedList } from 'react-native'
 
-export default function HomeScreen() {
+const CarouselArtist = ({ route }) => {
+  const { params } = route;
   const flatListRef = useRef(null);
   const [activeVideoIndex, setActiveVideoIndex] = useState(0)
 
@@ -37,48 +37,37 @@ export default function HomeScreen() {
     })
   ).current;
 
-  const renderItem = ({ item, index }) => (
-    <VideoItem
-      data={item}
-      isActive={activeVideoIndex === index}
-      onButtonPressCancel={onButtonPressCancel}
-      currentIndex={index}
-      isItemFavorite={false}
-    />
-  );
-
-  const keyExtractor = (item, index) => String(index);
-
-  const handleScrollEnd = (event) => {
-    const { contentOffset, layoutMeasurement } = event.nativeEvent;
-    const index = Math.round(contentOffset.y / (WINDOW_HEIGHT - bottomTabHeight));
-    flatListRef.current.scrollToIndex({ animated: true, index });
-  };
-
   return (
     <View style={styles.container}>
       
-    <VirtualizedList 
-      initialNumToRender={4}
+    <FlatList 
       ref={flatListRef}
-      data={dataArtistasProvider}
-      renderItem={renderItem}
-      keyExtractor={keyExtractor}
-      getItem={(data, index) => data[index]}
-      getItemCount={(data) => data.length}
+      data={params}
+      {...panResponder.panHandlers}
+      pagingEnabled
+      renderItem={({item, index}) => 
+        <VideoArtistList 
+          data={item} 
+          isActive={activeVideoIndex === index} 
+          onButtonPressCancel={onButtonPressCancel}
+          currentIndex={index}
+          isItemFavorite={true}
+        />
+        }
       onScroll={e => {
         const index = Math.round(e.nativeEvent.contentOffset.y / (WINDOW_HEIGHT - bottomTabHeight))
         setActiveVideoIndex(index);
       }}
-      onMomentumScrollEnd={handleScrollEnd}
-      snapToInterval={WINDOW_HEIGHT - bottomTabHeight}
+      
     />
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  }
-})
+    container: {
+      flex: 1
+    }
+  })
+
+export default CarouselArtist

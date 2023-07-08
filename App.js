@@ -9,6 +9,11 @@ import dataArtistasProvider from './src/utils/dataArtistas'
 import HomeScreen from './src/components/HomeScreen';
 import DetailArtist from './src/components/DetailArtist';
 import IconButton from './src/components/IconButton';
+import { Text } from 'react-native';
+import CarouselArtist from './src/components/CarouselArtist';
+import FavoritesList from './src/components/FavoritesList';
+import GroupsScreen from './src/components/GroupsScreen';
+import ContactScreen from './src/components/ContactScreen';
 
 const BottomTab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -28,16 +33,47 @@ const HomeStack = () => {
 
       <Stack.Screen 
         name="Artista" 
+        component={CarouselArtist} 
+        options={({ navigation }) => ({
+          headerShown: false,
+          title: '', // Vaciar el título del encabezado
+          // headerLeft: () => (
+          //   <IconButton
+          //     onPress={() => navigation.replace("Home")}
+          //     icon={<Ionicons name="arrow-back" size={24} color="black" />}
+          //   />
+          // ),
+          headerRight: () => null, // Ocultar otros elementos del encabezado
+          headerStyle: {
+            backgroundColor: "rgba(166, 166, 166, 1)",
+          },
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            fontSize: 24
+          },
+        })}
+        />
+        <Stack.Screen 
+        name="Profile" 
         component={DetailArtist} 
         options={({ navigation }) => ({
-          title: '', // Vaciar el título del encabezado
+          headerShown: false,
+          title: 'Profile', // Vaciar el título del encabezado
+          headerTitleAlign: "center",
           headerLeft: () => (
             <IconButton
-              onPress={() => navigation.goBack()}
+              onPress={() => navigation.replace("Home")}
               icon={<Ionicons name="arrow-back" size={24} color="black" />}
             />
           ),
           headerRight: () => null, // Ocultar otros elementos del encabezado
+          headerStyle: {
+            backgroundColor: "rgba(166, 166, 166, 1)",
+          },
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            fontSize: 24
+          },
         })}
         />
     </Stack.Navigator>
@@ -60,17 +96,17 @@ export default function App() {
             <Ionicons name="ios-home-sharp" size={24} color={focused ? "black" : "grey"} />
           ))
         }}/>
-         <BottomTab.Screen name="Favorites" component={HomeScreen} options={{
+         <BottomTab.Screen name="Favorites" component={FavoritesList} options={{
           tabBarIcon: (({focused}) => (
             <MaterialIcons name="favorite" size={24} color={focused ? "black" : "grey"} />
           ))
         }}/>
-         <BottomTab.Screen name="Groups" component={HomeScreen} options={{
+         <BottomTab.Screen name="Groups" component={GroupsScreen} options={{
           tabBarIcon: (({focused}) => (
             <Ionicons name="add-circle-outline" size={24} color={focused ? "black" : "grey"} />
           ))
         }}/>
-        <BottomTab.Screen name="Contact" component={HomeScreen} options={{
+        <BottomTab.Screen name="Contact" component={ContactScreen} options={{
           tabBarIcon: (({focused}) => (
             <MaterialIcons name="send-to-mobile" size={24} color={focused ? "black" : "grey"} />
           ))
