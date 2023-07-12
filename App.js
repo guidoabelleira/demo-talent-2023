@@ -1,19 +1,17 @@
 import React from 'react';
 import 'react-native-gesture-handler'
-import { Button, Pressable, StyleSheet, View } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import {NavigationContainer} from '@react-navigation/native'
 import {createBottomTabNavigator} from "@react-navigation/bottom-tabs"
 import { createStackNavigator } from '@react-navigation/stack';
-import dataArtistasProvider from './src/utils/dataArtistas'
-import HomeScreen from './src/components/HomeScreen';
+import HomeScreen from './src/components/Home/HomeScreen';
 import DetailArtist from './src/components/DetailArtist';
 import IconButton from './src/components/IconButton';
-import { Text } from 'react-native';
 import CarouselArtist from './src/components/CarouselArtist';
 import FavoritesList from './src/components/FavoritesList';
 import GroupsScreen from './src/components/GroupsScreen';
 import ContactScreen from './src/components/ContactScreen';
+import { TouchableOpacity } from 'react-native';
 
 const BottomTab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -26,7 +24,7 @@ const HomeStack = () => {
     }}
     >
       <Stack.Screen 
-        name="Home" 
+        name="HomeScreen" 
         component={HomeScreen} 
         options={{ headerShown: false }}
       />
@@ -36,14 +34,8 @@ const HomeStack = () => {
         component={CarouselArtist} 
         options={({ navigation }) => ({
           headerShown: false,
-          title: '', // Vaciar el título del encabezado
-          // headerLeft: () => (
-          //   <IconButton
-          //     onPress={() => navigation.replace("Home")}
-          //     icon={<Ionicons name="arrow-back" size={24} color="black" />}
-          //   />
-          // ),
-          headerRight: () => null, // Ocultar otros elementos del encabezado
+          title: '',
+          headerRight: () => null,
           headerStyle: {
             backgroundColor: "rgba(166, 166, 166, 1)",
           },
@@ -58,7 +50,7 @@ const HomeStack = () => {
         component={DetailArtist} 
         options={({ navigation }) => ({
           headerShown: false,
-          title: 'Profile', // Vaciar el título del encabezado
+          title: 'Profile', 
           headerTitleAlign: "center",
           headerLeft: () => (
             <IconButton
@@ -66,7 +58,7 @@ const HomeStack = () => {
               icon={<Ionicons name="arrow-back" size={24} color="black" />}
             />
           ),
-          headerRight: () => null, // Ocultar otros elementos del encabezado
+          headerRight: () => null,
           headerStyle: {
             backgroundColor: "rgba(166, 166, 166, 1)",
           },
@@ -81,7 +73,6 @@ const HomeStack = () => {
 }
 
 export default function App() {
-
   return (
     <NavigationContainer>
       <BottomTab.Navigator screenOptions={{
@@ -115,12 +106,3 @@ export default function App() {
     </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

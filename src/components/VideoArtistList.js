@@ -1,37 +1,36 @@
-import { View, Text, StyleSheet, StatusBar, Button, Pressable } from 'react-native'
+import { View, Text, StyleSheet, StatusBar, TouchableHighlight, Alert, ToastAndroid, Platform } from 'react-native'
 import React, { useRef, useEffect, useState } from 'react'
 import { Video, ResizeMode } from 'expo-av';
-import { Ionicons, Entypo, FontAwesome5, MaterialIcons, EvilIcons, Octicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons, Entypo, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
-
-import { PanGestureHandler } from 'react-native-gesture-handler';
-import Animated, { useAnimatedGestureHandler } from 'react-native-reanimated';
-
-import {WINDOW_HEIGHT, WINDOW_WIDTH} from '../utils/utils';
-import IconButton from './IconButton';
+import Flag from 'react-native-flags';
+import {WINDOW_HEIGHT, WINDOW_WIDTH, convertirAK} from '../utils/utils';
 import { Image } from 'react-native';
-import ModalShare from './ModalShare';
 
-const VideoArtistList = ({data, isActive, currentIndex, onButtonPressCancel}) => {
+const VideoArtistList = ({data, isActive, currentIndex}) => {
     const videoRef = useRef(null);
     const navigation = useNavigation();
-    const [isOpenShareModal, setIsOpenShareModal] = useState(false)
+    
     const [status, setStatus] = useState({});
     const [isMuted, setIsMuted] = useState(false);
-    const toggleMute = () => {
-        setIsMuted((prevMuted) => !prevMuted);
-    };
+    
+    const [favoriteStatus, setFavoriteStatus] = useState(false)
+    // const toggleMute = () => {
+    //     setIsMuted((prevMuted) => !prevMuted);
+    // };
 
     const onPressContact = async () => {
         await videoRef.current.pauseAsync()
         navigation.replace('Profile', data);
     };
 
-    const onPressMenu = async () => {
-        await videoRef.current.pauseAsync()
-        navigation.replace('Home');
+    const onPressFavorite = () => {
+        setFavoriteStatus(!favoriteStatus)
+        // if(favoriteStatus) {
+        //     alert(`${data.name} se agrego a favoritos`)
+        // }
     }
 
     useEffect(() => {
@@ -50,8 +49,8 @@ const VideoArtistList = ({data, isActive, currentIndex, onButtonPressCancel}) =>
   return (
     <>
         <View style={[styles.container, {height: WINDOW_HEIGHT - bottomTabHeight }]}>
-            <StatusBar barStyle={'light-content'} />
-            <TouchableOpacity style={styles.videoContainer} onPress={toggleMute} activeOpacity={0.7}>
+            <StatusBar barStyle={'default'} />
+            <View style={styles.videoContainer} >
             <Video 
                 ref={videoRef}
                 source={{
@@ -64,65 +63,53 @@ const VideoArtistList = ({data, isActive, currentIndex, onButtonPressCancel}) =>
                 isMuted={isMuted}
                 shouldPlay={false}
             />
-            </TouchableOpacity>
-            <View style={styles.bottomSection}>
-                <View style={styles.bottomBottomSection}>
-                    <View style={styles.containerName}>
-                        <Text style={styles.name}>{data.name}</Text>
-                        <MaterialIcons name="favorite" size={28} color="red" />
-                    </View>
-                    <Text style={styles.location}>{data.location}</Text>
-                    <Text style={styles.age}>{data.age}</Text>
-                </View>
-                <View style={styles.bottomTopSection}>
-                    <TouchableOpacity style={styles.buttonContact} onPress={() => onPressContact()}>
-                        <Text style={styles.buttonContactText}>Contactar</Text>
-                    </TouchableOpacity >
-                    <TouchableOpacity onPress={() => setIsOpenShareModal(true)}>
-                        <MaterialCommunityIcons name="share" size={36} color="#FFFFFF" />
-                    </TouchableOpacity>
-                </View>
             </View>
+            <TouchableOpacity style={styles.bottomSection} onPress={onPressContact}>
+                <View style={styles.bottomBottomSection}>
+                    <Image source={{uri: data.image}} style={styles.profileImage} />
+                    <View style={styles.containerInfo}>
+                        <Text style={styles.name}>{data.name}</Text>
+                        <Text style={styles.age}>{data.age}</Text>
+                    </View>
+                    <View style={styles.containerFlag}>
+                        <Flag
+                            code={data.isoFlag}
+                            size={24}
+                        />
+                    </View>
+                    <View style={styles.containerFav}>
+                        <TouchableOpacity  onPress={() => onPressFavorite()}>
+                            {
+                                favoriteStatus ? (
+                                    <MaterialIcons name="favorite" size={32} color="red" />
+                                ) : (
+                                    <MaterialIcons name="favorite-border" size={32} color="white" />
+                                )
+                            }
+                        </TouchableOpacity>
+                    </View>
+                    
+                </View>
+            </TouchableOpacity>
             <View style={styles.verticalBar}>
                 <View style={styles.verticalBarItem}>
-                    <Ionicons name="logo-instagram" size={28} color="white" />
-                    <Text style={styles.verticalBarText}>{data.views.instagram}</Text>
+                    <Ionicons name="logo-instagram" size={14} color="white" />
+                    <Text style={styles.verticalBarText}>{convertirAK(data.views.instagram)}</Text>
                 </View>
                 <View style={styles.verticalBarItem}>
-                    <FontAwesome5 name="tiktok" size={28} color="white" />
-                    <Text style={styles.verticalBarText}>{data.views.tiktok}</Text>
+                    <FontAwesome5 name="tiktok" size={14} color="white" />
+                    <Text style={styles.verticalBarText}>{convertirAK(data.views.tiktok)}</Text>
                 </View>
                 <View style={styles.verticalBarItem}>
-                    <Entypo name="spotify" size={28} color="white" />
-                    <Text style={styles.verticalBarText}>{data.views.spotify}</Text>
+                    <Entypo name="spotify" size={14} color="white" />
+                    <Text style={styles.verticalBarText}>{convertirAK(data.views.spotify)}</Text>
                 </View>
                 <View style={styles.verticalBarItem}>
-                    <Entypo name="youtube" size={28} color="white" />
-                    <Text style={styles.verticalBarText}>{data.views.youtube}</Text>
+                    <Entypo name="youtube" size={14} color="white" />
+                    <Text style={styles.verticalBarText}>{convertirAK(data.views.youtube)}</Text>
                 </View>
             </View>
-            <View style={styles.topBar}>
-                <View style={styles.containerTopBar}>
-                    <View style={styles.topBarItem}> 
-                        <TouchableOpacity>
-                            <Image source={require('../utils/vector.png')} />
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.topBarItem}> 
-                        <Octicons name="dot-fill" size={24} color="#F6F8B5" />
-                        <Text style={styles.topBarItemText}>New artist</Text>
-                        <Octicons name="dot-fill" size={24} color="#F6F8B5" />
-                    </View>
-                    <View style={styles.topBarItemRounded}> 
-                        <TouchableOpacity onPress={() => onPressMenu()}>
-                            <Ionicons name="ios-menu" size={28} color="#FFFFFF" />
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </View>
-           
         </View>
-        <ModalShare isOpen={isOpenShareModal} onClose={() => setIsOpenShareModal(false)}/>
         </>
 
   )
@@ -150,13 +137,14 @@ const styles = StyleSheet.create({
         paddingHorizontal: 12,
         paddingTop: 4,
         paddingBottom: 12,
-        backgroundColor: 'rgba(0, 0, 0, 0.1)',
+        backgroundColor: 'rgba(0, 0, 0, 0.05)',
         borderRadius: 8,
     },
     bottomBottomSection: {
         flex: 4,
-        flexDirection: "column",
-        alignItems: "baseline"
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "flex-start"
     },
     bottomTopSection: {
         flex: 4,
@@ -164,36 +152,35 @@ const styles = StyleSheet.create({
         justifyContent: "space-around",
         alignItems: "center"
     },
-    buttonContact: {
-        borderRadius: 10,
-        borderWidth: 2,
-        padding: 8,
-        borderColor: "#89B7FC",
-        marginRight: 4
+    profileImage: {
+        width: 40,
+        height: 40,
+        borderRadius: 100,
+        borderWidth: 1,
+        borderColor: "#FADE4F"
     },
-    buttonContactText: {
-        fontSize: 16,
-        fontWeight: "bold",
-        color: "#89B7FC"
+    containerFlag: {
+        alignSelf: "stretch",
+        paddingTop: 8,
+        marginHorizontal: 4
     },
-    containerName: {
-        flexDirection: "row"
-    },  
+    containerInfo: {
+        marginHorizontal: 6
+    },
+    containerFav: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "flex-end",
+        paddingRight: 10
+    },
     name: {
-        fontSize: 22,
+        fontSize: 16,
         color: "white",
-        fontWeight: "bold",
-        marginRight: 10
-    },
-    location: {
-        fontSize: 12,
-        color: "white",
-        fontWeight: "bold",
-        marginRight: 10
+        fontWeight: "bold"
     },
     age: {
         fontSize: 12,
-        color: "white",
+        color: "white"
     },
     topBar: {
         position: "absolute",
@@ -223,17 +210,33 @@ const styles = StyleSheet.create({
         paddingHorizontal: 12,
         fontSize: 20
     },
+    buttonContact: {
+        borderBottomEndRadius: 10,
+        borderTopEndRadius: 10,
+        borderBottomStartRadius: 10,
+        borderTopStartRadius: 10,
+        borderWidth: 1,
+        paddingHorizontal: 6,
+        paddingVertical: 2,
+        borderColor: "white",
+        marginLeft: 12
+    },
+    buttonContactText: {
+        fontSize: 16,
+        fontWeight: 600,
+        color: "white"
+    },
     verticalBar: {
         position: "absolute",
         left: 12,
-        top: 150
+        top: 280
     },
     verticalBarItem: {
         marginBottom: 24,
         alignItems: "center",
         borderRadius: 50,
-        width: 59,
-        height: 60,
+        width: 40,
+        height: 40,
         borderWidth: 1,
         borderColor: "#FADE4F",
         padding: 8
@@ -241,8 +244,8 @@ const styles = StyleSheet.create({
     verticalBarText: {
         color: "white",
         marginTop: 1,
-        fontSize: 10
-    }
+        fontSize: 8
+    },
 })
 
 export default VideoArtistList

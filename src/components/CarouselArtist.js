@@ -1,11 +1,9 @@
-import { FlatList, StyleSheet, View, PanResponder } from 'react-native'
+import { FlatList, StyleSheet, View } from 'react-native'
 import React, { useState, useRef } from 'react'
 import VideoArtistList from './VideoArtistList'
-
-import dataArtistasProvider from '../utils/dataArtistas'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs'
-
 import {WINDOW_HEIGHT} from '../utils/utils';
+import Header from './Layout/Header'
 
 const CarouselArtist = ({ route }) => {
   const { params } = route;
@@ -14,52 +12,27 @@ const CarouselArtist = ({ route }) => {
 
   const bottomTabHeight = useBottomTabBarHeight()
 
-  const onButtonPressCancel = (nextIndex) => {
-    const indexes = dataArtistasProvider.length
-    if (nextIndex >= 0 && nextIndex < dataArtistasProvider.length) {
-      flatListRef.current.scrollToIndex({ index: nextIndex, animated: true });
-    } else {
-      console.log('No hay más elementos');
-    }
-  }
-
-  const panResponder = React.useRef(
-    PanResponder.create({
-      onPanResponderEnd: (e, gestureState) => {
-        if (gestureState.dx < -50) {
-          // Calcular el siguiente índice en la FlatList
-          const nextIndex = currentIndex + 1;
-  
-          // Llamar a la función de manejo de eventos
-          onButtonPressCancel(nextIndex);
-        }
-      },
-    })
-  ).current;
-
   return (
     <View style={styles.container}>
-      
-    <FlatList 
-      ref={flatListRef}
-      data={params}
-      {...panResponder.panHandlers}
-      pagingEnabled
-      renderItem={({item, index}) => 
-        <VideoArtistList 
-          data={item} 
-          isActive={activeVideoIndex === index} 
-          onButtonPressCancel={onButtonPressCancel}
-          currentIndex={index}
-          isItemFavorite={true}
-        />
-        }
-      onScroll={e => {
-        const index = Math.round(e.nativeEvent.contentOffset.y / (WINDOW_HEIGHT - bottomTabHeight))
-        setActiveVideoIndex(index);
-      }}
-      
-    />
+      <Header />
+      <FlatList 
+        ref={flatListRef}
+        data={params}
+        pagingEnabled
+        renderItem={({item, index}) => 
+          <VideoArtistList 
+            data={item} 
+            isActive={activeVideoIndex === index} 
+            currentIndex={index}
+            isItemFavorite={true}
+          />
+          }
+        onScroll={e => {
+          const index = Math.round(e.nativeEvent.contentOffset.y / (WINDOW_HEIGHT - bottomTabHeight))
+          setActiveVideoIndex(index);
+        }}
+        
+      />
     </View>
   )
 }

@@ -1,30 +1,35 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
   Image,
-  FlatList,
   StyleSheet,
-  ScrollView,
+  TouchableOpacity
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import { LinearGradient } from 'expo-linear-gradient'
-import { TouchableOpacity } from "react-native-gesture-handler";
-// import cardBackground from "../utils/dust.png"
-const cardBackground = require("../utils/dust.png");
-import {
-  Ionicons,
-  Octicons,
-} from "@expo/vector-icons";
+import { CommonActions, useNavigation } from '@react-navigation/native';
+const cardBackground = require("../utils/dust.png")
+import Header from "./Layout/Header";
+import { MaterialCommunityIcons, Feather } from '@expo/vector-icons';
+import ModalShare from './ModalShare';
+
 
 const DetailArtist = ({ route }) => {
   const { params } = route;
-  console.log(params)
+  const [isOpenShareModal, setIsOpenShareModal] = useState(false)
+
   const navigation = useNavigation();
 
-  const onPressMenu = async () => {
-    navigation.replace("Home");
-  };
+    const onPressChat = () => {
+        navigation.dispatch(
+            CommonActions.reset({
+              index: 0,
+              routes: [
+                { name: 'Contact', params: { userId: params.idArtista, username: params.name, image: params.image } },
+              ],
+            })
+          );
+    }
 
   return (
     <LinearGradient 
@@ -33,39 +38,33 @@ const DetailArtist = ({ route }) => {
       start={[0.5, 0]}
       end={[1, 1]}  
     >
-      <View style={styles.topBar}>
-        <View style={styles.containerTopBar}>
-          <View style={styles.topBarItem}>
-            <TouchableOpacity>
-              <Image source={require("../utils/vector.png")} />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.topBarItem}>
-            <Octicons name="dot-fill" size={24} color="#F6F8B5" />
-            <Text style={styles.topBarItemText}>Profile</Text>
-            <Octicons name="dot-fill" size={24} color="#F6F8B5" />
-          </View>
-          <View style={styles.topBarItemRounded}>
-            <TouchableOpacity onPress={() => onPressMenu()}>
-              <Ionicons name="ios-menu" size={28} color="#FFFFFF" />
-            </TouchableOpacity>
-          </View>
+      <Header />
+        <Image
+          source={{
+            uri: params.image,
+          }}
+          style={styles.profileImage}
+        />
+        <View style={styles.card}>
+          <Image source={cardBackground} style={styles.cardBackgroundImage} />
+          <Text style={styles.additionalData}>Name: {params.name}</Text>
+          <Text style={styles.additionalData}>Age: {params.age}</Text>
+          <Text style={styles.additionalData}>From: {params.location}</Text>
+          <Text style={styles.additionalData}>Phone: {params.phone}</Text>
+          <Text style={styles.additionalData}>Email: {params.email}</Text>
         </View>
-      </View>
-      <Image
-        source={{
-          uri: params.image,
-        }}
-        style={styles.profileImage}
-      />
-      <View style={styles.card}>
-        <Image source={cardBackground} style={styles.cardBackgroundImage} />
-        <Text style={styles.additionalData}>Name: {params.name}</Text>
-        <Text style={styles.additionalData}>Age: {params.age}</Text>
-        <Text style={styles.additionalData}>From: {params.location}</Text>
-        <Text style={styles.additionalData}>Phone: {params.phone}</Text>
-        <Text style={styles.additionalData}>Email: {params.email}</Text>
-      </View>
+        <View style={styles.containerLinks}> 
+          <TouchableOpacity onPress={() => onPressChat()} style={styles.button}>
+              <Feather name="message-circle" size={36} color="white" />
+              <Text style={{color: "white"}}>Chat</Text>
+          </TouchableOpacity>
+   
+          <TouchableOpacity onPress={() => setIsOpenShareModal(true)} style={styles.button}>
+              <MaterialCommunityIcons name="share" size={36} color="white" />
+              <Text style={{color: "white"}}>Shared</Text>
+          </TouchableOpacity>
+        </View>
+        <ModalShare isOpen={isOpenShareModal} onClose={() => setIsOpenShareModal(false)}/>
     </LinearGradient>
   );
 };
@@ -74,9 +73,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "flex-start",
+    justifyContent: "center",
     padding: 16,
-    // backgroundColor: "rgba(166, 166, 166, 1)",
   },
   title: {
     fontSize: 24,
@@ -114,52 +112,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: "center",
   },
-  photoList: {
-    marginBottom: 16,
-  },
-  photoItem: {
-    width: 120,
-    height: 120,
-    marginRight: 8,
-    borderRadius: 8,
-  },
-  sectionAv: {
-    flex: 1,
-    marginBottom: 8,
-  },
-  video: {
-    width: 320,
-    height: 420,
-    backgroundColor: "black",
-    borderRadius: 8,
-  },
-  topBar: {
-    width: "100%",
-    marginVertical: 12,
-  },
-  containerTopBar: {
+  containerLinks: {
+    marginTop: 18,
+    width: 200,
     flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: 18,
+    justifyContent: "space-between"
   },
-  topBarItemRounded: {
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 1,
-    borderColor: "#FADE4F",
-    borderRadius: 50,
-    padding: 4,
-  },
-  topBarItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  topBarItemText: {
-    color: "#FFFFFF",
-    paddingHorizontal: 12,
-    fontSize: 20,
-  },
+  button: {
+    alignItems: "center"
+  }
 });
 
 export default DetailArtist;

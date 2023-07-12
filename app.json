@@ -8,32 +8,23 @@
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "contain",
+      "resizeMode": "cover",
       "backgroundColor": "#ffffff"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
+    "platforms": ["ios", "android"],
     "ios": {
       "supportsTablet": true,
+      "bundleIdentifier": "com.talent.talent",
+      "buildNumber": "1.0.0",
       "infoPlist": {
-        "UIBackgroundModes": [
-          "audio"
-        ]
-      },
-      "bundleIdentifier": "com.guidoabelleira.talent"
+        "NSMicrophoneUsageDescription": "Esta aplicación necesita acceso al micrófono para grabar audio.",
+        "NSCameraUsageDescription": "Acceso a la cámara es necesario para grabar videos."
+      }
     },
     "android": {
-      "permissions": [
-        "INTERNET",
-        "VIBRATE",
-        "USE_FINGERPRINT",
-        "WAKE_LOCK",
-        "FOREGROUND_SERVICE",
-        "CHANGE_WIFI_STATE",
-        "CHANGE_NETWORK_STATE",
-        "ACCESS_WIFI_STATE"
-      ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -47,6 +38,14 @@
       "eas": {
         "projectId": "2c2f3ff4-616a-4688-bdee-de46a6371e56"
       }
-    }
+    },
+    "plugins": [
+      [
+        "expo-av",
+        {
+          "microphonePermission": "Allow Talent to access your microphone."
+        }
+      ]
+    ]
   }
 }
