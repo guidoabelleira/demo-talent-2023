@@ -2,12 +2,13 @@ import { StyleSheet, View, Alert } from 'react-native';
 import { useEffect, useRef, useState } from 'react';
 import Header from '../Layout/Header'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import dataArtistasProvider from '../../utils/dataArtistas'
 import Swipe from './Swipe';
 
 export default function HomeScreen() {
   const navigation = useNavigation();
+  const isFocused = useIsFocused();
   const [users, setUsers] = useState([])
   const [currentIndex, setCurrentIndex] = useState(0)
 
@@ -100,6 +101,7 @@ export default function HomeScreen() {
               <Swipe 
                 key={i} 
                 ref={swipeRef}
+                isFocused={isFocused}
                 users={users} 
                 currentIndex={currentIndex} 
                 handleLike={handleLike} 

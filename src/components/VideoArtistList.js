@@ -4,13 +4,14 @@ import { Video, ResizeMode } from 'expo-av';
 import { Ionicons, Entypo, FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native';
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import Flag from 'react-native-flags';
 import {WINDOW_HEIGHT, WINDOW_WIDTH, convertirAK} from '../utils/utils';
 import { Image } from 'react-native';
 
 const VideoArtistList = ({data, isActive, currentIndex}) => {
     const videoRef = useRef(null);
+    const isFocused = useIsFocused();
     const navigation = useNavigation();
     
     const [status, setStatus] = useState({});
@@ -35,15 +36,19 @@ const VideoArtistList = ({data, isActive, currentIndex}) => {
 
     useEffect(() => {
         const playVideo = async () => {
-            if (videoRef.current && isActive) {
-                await videoRef.current.playAsync();
+            if(isFocused) {
+                if (videoRef.current && isActive) {
+                    await videoRef.current.playAsync();
+                } else {
+                    await videoRef.current.pauseAsync();
+                }
             } else {
                 await videoRef.current.pauseAsync();
             }
         };
     
         playVideo();
-    }, [isActive]);
+    }, [isActive, isFocused]);
 
     const bottomTabHeight = useBottomTabBarHeight();
   return (

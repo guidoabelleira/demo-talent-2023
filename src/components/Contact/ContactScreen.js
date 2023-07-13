@@ -1,7 +1,7 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 import ChatView from './ChatView'
-import Header from './Layout/Header'
+import Header from '../Layout/Header'
 
 const ContactScreen = () => {
   return (

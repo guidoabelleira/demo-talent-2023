@@ -5,12 +5,12 @@ import { Asset } from 'expo-asset';
 import VideoItem from './VideoItem'
 const cardBackground = Asset.fromModule(require("../../utils/splash.png"))
 
-function Swipes({users, currentIndex, handleLike, handlePass, swipesRef}) {
+function Swipes({users, currentIndex, handleLike, handlePass, swipesRef, isFocused}) {
     
     const renderLeftActions = () => {
         return (
             <RectButton >
-                <VideoItem data={users[currentIndex + 1]} currentIndex={currentIndex}/>
+                <VideoItem data={users[currentIndex + 1]} currentIndex={currentIndex} isFocused={isFocused}/>
             </RectButton>
         )
     }
@@ -42,7 +42,7 @@ function Swipes({users, currentIndex, handleLike, handlePass, swipesRef}) {
                 }
             }
         >
-            <VideoItem data={users[currentIndex]} currentIndex={currentIndex} />
+            <VideoItem data={users[currentIndex]} currentIndex={currentIndex} isFocused={isFocused}/>
         </Swipeable>
     )
 }

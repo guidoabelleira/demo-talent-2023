@@ -10,12 +10,12 @@ import {WINDOW_HEIGHT, WINDOW_WIDTH, convertirAK} from '../../utils/utils';
 import { Image } from 'react-native';
 
 
-export default function VideoItem({data, currentIndex}) {
+export default function VideoItem({data, currentIndex, isFocused}) {
     const videoRefInitial = useRef(null);
     const [status, setStatus] = useState({});
     const [isMuted, setIsMuted] = useState(false);
     
-    // const toggleMute = () => {
+    // const toggleMute = () => 
     //     console.log("mute")
     //     setIsMuted(!isMuted);
     //     videoRef.current.setStatusAsync({ isMuted })
@@ -23,11 +23,15 @@ export default function VideoItem({data, currentIndex}) {
 
     const playVideo = async () => {
         // console.log(currentIndex)
-        if(currentIndex == 0) {
-            await videoRefInitial.current.playAsync();
-        }
-        if (videoRefInitial.current && (currentIndex + 1) === data.idArtista) {
-            await videoRefInitial.current.playAsync();
+        if(isFocused) {
+            if(currentIndex == 0) {
+                await videoRefInitial.current.playAsync();
+            }
+            if (videoRefInitial.current && (currentIndex + 1) === data.idArtista) {
+                await videoRefInitial.current.playAsync();
+            } else {
+                await videoRefInitial.current.pauseAsync();
+            }
         } else {
             await videoRefInitial.current.pauseAsync();
         }
@@ -35,7 +39,7 @@ export default function VideoItem({data, currentIndex}) {
 
     useEffect(() => {
         playVideo();
-    }, [currentIndex]);
+    }, [currentIndex, isFocused]);
 
     const bottomTabHeight = useBottomTabBarHeight();
 

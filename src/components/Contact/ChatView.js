@@ -5,13 +5,18 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRoute } from '@react-navigation/native';
 import { Image } from 'react-native';
 import { StyleSheet } from 'react-native';
+import { Asset } from 'expo-asset';
 
 const ChatView = () => {
   const [messages, setMessages] = useState([]);
   const [inputText, setInputText] = useState('');
 
   const route = useRoute();
-  const { userId, username, image } = route.params;
+  const initialState = {
+    userId: route?.params?.userId ? route.params.userId : 100,
+    username: route?.params?.username ? route?.params.username : "Lina de Sol",
+    image: route?.params?.image ? route?.params.image : Asset.fromModule(require('../../utils/Fotos/Foto1.jpg')).uri
+  }
 
   const renderMessage = ({ item }) => {
     return (
@@ -58,11 +63,11 @@ const ChatView = () => {
       <View style={{flex: 1, display: "flex", justifyContent: "center", marginTop: 20, alignItems: "center"}}>
         <Image
           source={{
-            uri: image,
+            uri: initialState.image,
           }}
           style={styles.profileImage}
         />
-        <Text>Inicia una conversacion con <Text style={{fontWeight: 800}}>{username}</Text></Text>
+        <Text>Inicia una conversacion con <Text style={{fontWeight: 800}}>{initialState.username}</Text></Text>
       </View>
       
       <FlatList

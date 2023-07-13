@@ -7,6 +7,7 @@ import Header from './Layout/Header'
 
 const CarouselArtist = ({ route }) => {
   const { params } = route;
+  console.log("inCarousel", params)
   const flatListRef = useRef(null);
   const [activeVideoIndex, setActiveVideoIndex] = useState(0)
 
@@ -15,7 +16,9 @@ const CarouselArtist = ({ route }) => {
   return (
     <View style={styles.container}>
       <Header />
-      <FlatList 
+      {
+        params && (
+          <FlatList 
         ref={flatListRef}
         data={params}
         pagingEnabled
@@ -33,6 +36,9 @@ const CarouselArtist = ({ route }) => {
         }}
         
       />
+        )
+      }
+      
     </View>
   )
 }
