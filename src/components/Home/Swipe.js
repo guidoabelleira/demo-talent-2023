@@ -19,7 +19,7 @@ function Swipes({users, currentIndex, handleLike, handlePass, swipesRef, isFocus
         return (
             <RectButton style={styles.container}>
                 {/* <VideoItem data={users[currentIndex + 1]} /> */}
-                <Image source={cardBackground} style={styles.cardBackgroundImage} resizeMode='cover'/>
+                {/* <Image source={cardBackground} style={styles.cardBackgroundImage} resizeMode='cover'/> */}
             </RectButton>
         )
     }
@@ -49,7 +49,8 @@ function Swipes({users, currentIndex, handleLike, handlePass, swipesRef, isFocus
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        backgroundColor: "black"
     },
     cardBackgroundImage: {
         width: "100%",
