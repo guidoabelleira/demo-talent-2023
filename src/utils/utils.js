@@ -4,15 +4,11 @@ export const {width: WINDOW_WIDTH, height: WINDOW_HEIGHT} = Dimensions.get('wind
 
 export function convertirAK(numero) {
     const sufijos = ["k", "M", "B", "T"];
-
     let valor = parseFloat(numero);
-    // console.log(valor)
     let sufijoIndex = 0;
-
     while (valor >= 1000 && sufijoIndex < sufijos.length - 1) {
         valor /= 1000;
         sufijoIndex++;
     }
-
     return valor.toFixed(0) + sufijos[sufijoIndex];
 }

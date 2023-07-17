@@ -18,7 +18,6 @@ const FavoritesList = () => {
   const navigation = useNavigation();
 
   const onPressChat = (artist) => {
-    console.log(artist)
     navigation.dispatch(
       CommonActions.reset({
         index: 0,

@@ -14,15 +14,8 @@ export default function VideoItem({data, currentIndex, isFocused}) {
     const videoRefInitial = useRef(null);
     const [status, setStatus] = useState({});
     const [isMuted, setIsMuted] = useState(false);
-    
-    // const toggleMute = () => 
-    //     console.log("mute")
-    //     setIsMuted(!isMuted);
-    //     videoRef.current.setStatusAsync({ isMuted })
-    // };
 
     const playVideo = async () => {
-        // console.log(currentIndex)
         if(isFocused) {
             if(currentIndex == 0) {
                 await videoRefInitial.current.playAsync();

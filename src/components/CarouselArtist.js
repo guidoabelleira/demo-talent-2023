@@ -7,12 +7,9 @@ import Header from './Layout/Header'
 
 const CarouselArtist = ({ route }) => {
   const { params } = route;
-  console.log("inCarousel", params)
   const flatListRef = useRef(null);
   const [activeVideoIndex, setActiveVideoIndex] = useState(0)
-
   const bottomTabHeight = useBottomTabBarHeight()
-
   return (
     <View style={styles.container}>
       <Header />
