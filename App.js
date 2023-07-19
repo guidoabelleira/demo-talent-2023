@@ -9,7 +9,7 @@ import DetailArtist from './src/components/DetailArtist';
 import IconButton from './src/components/IconButton';
 import CarouselArtist from './src/components/CarouselArtist';
 import FavoritesList from './src/components/Favorite/FavoriteScreen';
-import GroupsScreen from './src/components/GroupsScreen';
+import GroupsScreen from './src/components/Groups/GroupsScreen';
 import ContactScreen from './src/components/Contact/ContactScreen';
 import { TouchableOpacity } from 'react-native';
 

@@ -3,7 +3,7 @@ import React from 'react'
 import { Swipeable, RectButton } from 'react-native-gesture-handler'
 import { Asset } from 'expo-asset';
 import VideoItem from './VideoItem'
-const cardBackground = Asset.fromModule(require("../../utils/splash.png"))
+const cardBackground = Asset.fromModule(require("../../utils/inter-match.png"))
 
 function Swipes({users, currentIndex, handleLike, handlePass, swipesRef, isFocused}) {
     
@@ -19,7 +19,8 @@ function Swipes({users, currentIndex, handleLike, handlePass, swipesRef, isFocus
         return (
             <RectButton style={styles.container}>
                 {/* <VideoItem data={users[currentIndex + 1]} /> */}
-                {/* <Image source={cardBackground} style={styles.cardBackgroundImage} resizeMode='cover'/> */}
+                <Image source={cardBackground} style={styles.cardBackgroundImage} resizeMode='cover'/>
+                {/* <MaterialCommunityIcons name="check-bold" size={24} color="black" /> */}
             </RectButton>
         )
     }

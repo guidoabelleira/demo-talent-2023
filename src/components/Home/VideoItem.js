@@ -95,10 +95,13 @@ export default function VideoItem({data, currentIndex, isFocused}) {
 
 const styles = StyleSheet.create({
     container: {
-        width: WINDOW_WIDTH
+        width: WINDOW_WIDTH,
+        // opacity: 0.5
     },
     videoContainer: {
         flex: 1,
+        shadowColor: '#000',
+        shadowOpacity: 0.9,
     },
     video: {
         position: 'absolute',
@@ -114,7 +117,7 @@ const styles = StyleSheet.create({
         height: 65,
         paddingHorizontal: 12,
         paddingBottom: 16,
-        backgroundColor: 'rgba(0, 0, 0, 0.05)',
+        backgroundColor: 'rgba(0, 0, 0, 0.07)',
         borderRadius: 8,
         paddingVertical: 8
     },

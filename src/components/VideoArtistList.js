@@ -126,6 +126,8 @@ const styles = StyleSheet.create({
     },
     videoContainer: {
         flex: 1,
+        shadowColor: '#000',
+        shadowOpacity: 0.9,
     },
     video: {
         position: 'absolute',
@@ -142,7 +144,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 12,
         paddingTop: 4,
         paddingBottom: 12,
-        backgroundColor: 'rgba(0, 0, 0, 0.05)',
+        backgroundColor: 'rgba(0, 0, 0, 0.07)',
         borderRadius: 8,
     },
     bottomBottomSection: {
